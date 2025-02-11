@@ -134,3 +134,8 @@ openssl enc -aes-256-cbc -d -in my_file.txt.enc -out my_file.txt.dec -pass file:
 - **Security Considerations**: The AES key is used to encrypt the file, and it is encrypted with your RSA public key to ensure that only the owner of the corresponding private key can decrypt it. The IV and AES key are essential for the encryption and decryption process.
 - **Customization**: You can modify the filenames and paths in the commands to suit your specific use case.
 
+## TODO
+- Implement countdown mechanism to automatically notify trusted people after expiration.
+- Improve encryption security by adding integrity verification (e.g., AES-GCM instead of AES-CBC).
+- Refactor and optimize the decryption process for better error handling.
+
