@@ -23,10 +23,13 @@
 4. **Automatic delivery**: If the timer expires and you haven't renewed it, the system will automatically encrypt your files and send them to your trusted person’s email.
 
 ## Security Considerations
-This project uses a hybrid encryption mechanism combining `RSA` and `AES` encryption
-**RSA** (asymmetric encryption) is used to encrypt the AES session key with the trusted person's public RSA key. This ensures that only the trusted person with the corresponding private RSA key can decrypt the AES key.
-**AES** (symmetric encryption) is used to encrypt the actual file contents. AES-256 is used with GCM mode, which provides both encryption and integrity checks (authentication tags).
-This ensures a secure, efficient, and modern encryption process, where the AES key is protected with RSA and the file contents are protected with AES encryption.
+This project uses a hybrid encryption mechanism combining RSA and AES encryption.
+
+- **RSA (asymmetric encryption)** is used to encrypt the AES session key with the trusted person's public RSA key. This ensures that only the trusted person with the corresponding private RSA key can decrypt the AES key.
+- **AES (symmetric encryption)** is used to encrypt the actual file contents. AES-256 is used with CBC mode, which requires padding and an initialization vector (IV). The IV is stored alongside the encrypted file.
+- Since AES-CBC does not provide integrity verification, it is important to ensure the encrypted files are not tampered with before decryption.
+
+This hybrid encryption approach ensures that the AES key remains protected using RSA, while AES provides a fast and secure way to encrypt file contents.
 
 ## Installation
 To use the project, clone the repository:
