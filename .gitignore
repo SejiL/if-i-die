@@ -1,0 +1,4 @@
+files/
+venv/
+__pycache__/
+config.yaml

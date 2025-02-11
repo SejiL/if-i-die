@@ -1,0 +1,4 @@
+python-dotenv
+pycryptodome
+pyyaml
+

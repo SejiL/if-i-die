@@ -1,0 +1,37 @@
+# Uncomment and set the number of days for the countdown timer.
+# Default is 30 days.
+# countdown_days: 30
+
+# Uncomment and specify the path to the countdown file.
+# Default is 'files/countdown.json'.
+# countdown_file: files/countdown.json
+
+# Uncomment and specify the folder where PEM keys are stored.
+# Default is 'files/pem'.
+# pem_folder: files/pem
+
+# Uncomment and specify the folder where input files are stored.
+# Default is 'files/input'.
+# input_folder: files/input
+
+# Uncomment and specify the folder where encrypted files will be stored.
+# Default is 'files/encrypted'.
+# encrypted_folder: files/encrypted
+
+# Uncomment and specify the folder where decrypted files will be stored.
+# Default is 'files/decrypted'.
+# decrypted_folder: files/decrypted
+
+
+# Add the trusted people's information below.
+# For each person, provide their email and SSH public key.
+# You can add as many trusted people as needed by following the same format.
+trust_people:
+  user1:
+    email: user1@mail.com
+    ssh_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEArUfr5v5XzX5NzeA== user@hostname"
+    
+  user2:
+    email: user2@mail.com
+    ssh_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEArUfr5v5XzX5NzeA== user@hostname"
+
