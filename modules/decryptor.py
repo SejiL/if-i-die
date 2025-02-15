@@ -1,39 +1,48 @@
+import tarfile
+import os
 from Crypto.Cipher import AES
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 from Crypto.Util.Padding import unpad
-import os
-import argparse
 
 class Decryptor:
+    # Decrypt all files in the encrypted folder
     def decrypt_all_files(self, private_key_path, encrypted_folder, decrypted_folder):
-        """Decrypts all encrypted files in the folder."""
         if not os.path.exists(encrypted_folder):
             raise FileNotFoundError(f"❌ Encrypted folder not found: {encrypted_folder}")
 
-        # Create Decrypt folder if it doesn't exist
         os.makedirs(decrypted_folder, exist_ok=True)
 
-        # List files in the encrypted folder
         for filename in os.listdir(encrypted_folder):
-            # Skip AES key files and decrypt only `.enc` files
-            if filename.endswith(".enc") and not filename.endswith(".aes_key.enc"):
-                try:
-                    print(f"✅ Decrypting file: {filename}")
-                    self.decrypt_file(filename, private_key_path, encrypted_folder, decrypted_folder)
-                except Exception as e:
-                    print(f"❌ Failed to decrypt {filename}: {str(e)}")
+            if filename.endswith(".tar.gz"):
+                print(f"📦 Extracting {filename} ...")
 
-    def decrypt_file(self, filename, private_key_path, encrypted_folder, decrypted_folder):
-        """Decrypts a single encrypted file using the private RSA key."""
-        encrypted_file_path = os.path.join(encrypted_folder, filename)
-        aes_key_file_path = os.path.join(encrypted_folder, filename.replace(".enc", ".aes_key.enc"))
+                with tarfile.open(os.path.join(encrypted_folder, filename), "r:gz") as tar:
+                    tar.extractall(path=decrypted_folder)
 
-        if not os.path.exists(encrypted_file_path):
-            raise FileNotFoundError(f"❌ Encrypted file not found: {encrypted_file_path}")
+                print(f"✅ Extracted {filename} to {decrypted_folder}")
 
-        if not os.path.exists(aes_key_file_path):
-            raise FileNotFoundError(f"❌ AES key file not found for: {filename}")
+        self.decrypt_user_files(private_key_path, decrypted_folder)
+
+    # Decrypt all files in the decrypted folder
+    def decrypt_user_files(self, private_key_path, decrypted_folder):
+        for root, _, files in os.walk(decrypted_folder):
+            for filename in files:
+                if filename.endswith(".enc") and not filename.endswith(".aes_key.enc"):
+                    try:
+                        print(f"✅ Decrypting file: {filename}")
+                        self.decrypt_file(filename, private_key_path, root)
+                    except Exception as e:
+                        print(f"❌ Failed to decrypt {filename}: {str(e)}")
+
+    # Decrypt a single file
+    def decrypt_file(self, filename, private_key_path, folder_path):
+        encrypted_file_path = os.path.join(folder_path, filename)
+        aes_key_file_path = os.path.join(folder_path, filename.replace(".enc", ".aes_key.enc"))
+
+        if not os.path.exists(encrypted_file_path) or not os.path.exists(aes_key_file_path):
+            print(f"❌ Encrypted file or key missing: {filename}")
+            return
 
         try:
             # Load the encrypted AES key
@@ -53,26 +62,21 @@ class Decryptor:
 
             # Load the encrypted file content
             with open(encrypted_file_path, 'rb') as f_enc:
-                #iv, tag, ciphertext = [f_enc.read(x) for x in (16, 16, -1)]  # Read IV, tag, and ciphertext
                 iv = f_enc.read(16)  # Read IV (first 16 bytes)
                 ciphertext = f_enc.read()  # The rest is ciphertext
-
 
             # Decrypt the file using AES
             cipher_aes = AES.new(aes_key, AES.MODE_CBC, iv=iv)
             plaintext = unpad(cipher_aes.decrypt(ciphertext), AES.block_size)
 
             # Save the decrypted file
-            decrypted_file_path = os.path.join(decrypted_folder, filename.replace(".enc", ""))
-            os.makedirs(decrypted_folder, exist_ok=True)
+            decrypted_file_path = os.path.join(folder_path, filename.replace(".enc", ""))
             with open(decrypted_file_path, 'wb') as f_dec:
                 f_dec.write(plaintext)
 
             print(f"✅ Decrypted file saved to: {decrypted_file_path}")
-
-        except FileNotFoundError as e:
-            print(f"❌ Error: {e}")
-        except ValueError:
-            print("❌ Decryption failed! The file might be corrupted or tampered with.")
+        
+        except FileNotFoundError as fnf:
+            print(f"❌ Private key not found: {str(fnf)}")
         except Exception as e:
-            print(f"❌ Unexpected error: {e}")
+            print(f"❌ RSA Private Key Import Error: {str(e)}")

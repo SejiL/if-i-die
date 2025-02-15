@@ -1,37 +1,25 @@
-# Uncomment and set the number of days for the countdown timer.
-# Default is 30 days.
-# countdown_days: 30
+owner:
+  name: "Your Name"  # The name of the owner of the encrypted files.
+  email: "Your Email"  # The owner's email, used for notifications.
 
-# Uncomment and specify the path to the countdown file.
-# Default is 'files/countdown.json'.
-# countdown_file: files/countdown.json
+# Configuration for countdown mechanism (uncomment to use)
+# countdown_days: 30  # Number of days before the countdown expires.
+# countdown_file: files/countdown.json  # Path to store countdown status.
+# pem_folder: files/pem  # Folder containing private keys for decryption.
+# input_folder: files/input  # Folder where unencrypted files are placed.
+# encrypted_folder: files/encrypted  # Folder to store encrypted files.
+# decrypted_folder: files/decrypted  # Folder to store decrypted files after decryption.
 
-# Uncomment and specify the folder where PEM keys are stored.
-# Default is 'files/pem'.
-# pem_folder: files/pem
+smtp:
+  server: "smtp.example.com"  # SMTP server address for sending emails.
+  port: 465  # SMTP server port (use 465 for SSL, 587 for TLS).
+  user: "your-email@example.com"  # Email address used to send notifications.
+  password: "your-password"  # Password for the SMTP server (consider using environment variables for security).
 
-# Uncomment and specify the folder where input files are stored.
-# Default is 'files/input'.
-# input_folder: files/input
-
-# Uncomment and specify the folder where encrypted files will be stored.
-# Default is 'files/encrypted'.
-# encrypted_folder: files/encrypted
-
-# Uncomment and specify the folder where decrypted files will be stored.
-# Default is 'files/decrypted'.
-# decrypted_folder: files/decrypted
-
-
-# Add the trusted people's information below.
-# For each person, provide their email and SSH public key.
-# You can add as many trusted people as needed by following the same format.
 trust_people:
   user1:
-    email: user1@mail.com
-    ssh_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEArUfr5v5XzX5NzeA== user@hostname"
-    
+    email: user1@mail.com  # Email of a trusted person.
+    ssh_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEArUfr5v5XzX5NzeA== user@hostname"  # Their SSH public key for accessing encrypted files.
   user2:
-    email: user2@mail.com
-    ssh_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEArUfr5v5XzX5NzeA== user@hostname"
-
+    email: user2@mail.com  # Email of another trusted person.
+    ssh_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEArUfr5v5XzX5NzeA== user@hostname"  # Their SSH public key.

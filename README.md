@@ -9,6 +9,7 @@
 - [Workflow for User](#workflow-for-user)
 - [Workflow for Trusted Person](#workflow-for-trusted-person)
 - [Encryption and Decryption Process](#encryption-and-decryption-process)
+- [Acknowledgments](#acknowledgments)
 
 ## Features
 - **Encrypt necessary files or documents**: Secure your sensitive files by encrypting them with a trusted person's public SSH key.
@@ -53,25 +54,58 @@ mv config.yaml.example config.yaml
 ```
 
 ## Workflow for User
-1. **Prepare Configuration File**: Copy the example configuration file to config.yaml
+### 1. Prepare Configuration File
+Copy the example configuration file to config.yaml
    ```bash
    cp config.yaml.example config.yaml
    ```
    Then, open `config.yaml` and update the required values, such as trusted person's email and SSH public key.
 
-2. **Encrypt Files**: Encrypt all files in the `files/input` folder with all available trusted person public keys:
+### 2. Encrypt Files
+Encrypt all files in the `files/input` folder by creating a separate folder for each trusted person. The folder name must match the name specified in `config.yaml`. For example:
+   ```bash
+   files/input/sajjad/
+   files/input/alice/
+   ```
+   To encrypt files for all trusted persons, run:
    ```bash
    python main.py encrypt
    ```
-3. **Renew Countdown Timer**: If you want to renew the countdown timer manually, you can use the following command:
+   Each person's files will be encrypted using their respective public SSH key. The encrypted files may be stored as a compressed `.tar.gz` archive in the `files/encrypted` directory.
+
+### 3. Test Email Configuration
+To test whether the SMTP settings in `config.yaml` are correctly configured, use the following command:
+   ```bash
+   python main.py email-test --email your-email@example.com
+   ```
+   This will attempt to send a test email to the specified address to verify that the email-sending functionality is working properly.
+
+### 4. Countdown Timer
+- **Renew Countdown Timer**: To manually renew the countdown timer, use the following command:
    ```bash
    python main.py countdown renew
    ```
+   This will extend the countdown based on the `countdown_days` value set in `config.yaml`.
 
-4. **Check Countdown Status**: To check how much time is left before the countdown expires, use:
+- **Check Countdown Status & Expiry**: To check whether the countdown timer has expired and take necessary actions, use:
    ```bash
-   python main.py countdown status
+   python main.py countdown check-expiry
    ```
+   - If the timer **has expired**, the encrypted files will be sent to each trusted person via email.
+   - If the timer is **about to expire**, the system will calculate **10% of the total countdown time** and send a reminder email to the project owner (defined in `config.yaml`), prompting them to run `renew` before expiration.
+   - You can run `check-expiry` at any time to see how much time is left before expiration. The output will show the remaining **days**, **hours**, **minutes**, and **seconds** until the countdown ends.
+
+### 5. Setup Automatic Countdown Check
+To automatically check the countdown status every minute, you can add the following line to your crontab (`/etc/crontab`):
+   ```bash
+   * * * * * your-username cd /absolute/path/to/if-i-die && /absolute/path/to/python main.py countdown check-expiry >> /var/log/if-i-die.log 2>&1
+   ```
+   Make sure to:
+   1. Replace `your-username` with your actual username
+   2. Replace `/absolute/path/to/if-i-die` with the full path to the project directory
+   3. Replace `/absolute/path/to/python` with the path to your Python executable (you can find it using `which python`)
+   4. The log file `/var/log/if-i-die.log` will help you monitor the script's execution
+   - You can also use `crontab -e` to add this entry to your user's crontab instead of the system-wide `/etc/crontab`.
 
 ## Workflow for Trusted Person
 1. **Install Dependencies**: After receiving the encrypted files, you need to install the required dependencies:
@@ -134,8 +168,9 @@ openssl enc -aes-256-cbc -d -in my_file.txt.enc -out my_file.txt.dec -pass file:
 - **Security Considerations**: The AES key is used to encrypt the file, and it is encrypted with your RSA public key to ensure that only the owner of the corresponding private key can decrypt it. The IV and AES key are essential for the encryption and decryption process.
 - **Customization**: You can modify the filenames and paths in the commands to suit your specific use case.
 
-## TODO
-- Implement countdown mechanism to automatically notify trusted people after expiration.
-- Improve encryption security by adding integrity verification (e.g., AES-GCM instead of AES-CBC).
-- Refactor and optimize the decryption process for better error handling.
+## Acknowledgments
+Parts of this project, including documentation and code improvements, were developed with the assistance of AI language models:
+- ChatGPT (chatgpt.com)
+- Claude (claude.ai)
 
+We believe in transparency and acknowledge the role of AI assistance in improving this open-source project.
