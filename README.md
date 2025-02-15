@@ -7,6 +7,7 @@
 - [Security Considerations](#security-considerations)
 - [Installation](#installation)
 - [Workflow for User](#workflow-for-user)
+- [Alternative Manual Method After Encryption](#alternative-manual-method-after-encryption)
 - [Workflow for Trusted Person](#workflow-for-trusted-person)
 - [Encryption and Decryption Process](#encryption-and-decryption-process)
 - [Acknowledgments](#acknowledgments)
@@ -106,6 +107,19 @@ To automatically check the countdown status every minute, you can add the follow
    3. Replace `/absolute/path/to/python` with the path to your Python executable (you can find it using `which python`)
    4. The log file `/var/log/if-i-die.log` will help you monitor the script's execution
    - You can also use `crontab -e` to add this entry to your user's crontab instead of the system-wide `/etc/crontab`.
+
+## Alternative Manual Method After `Encryption`
+If you prefer not to use the automatic email functionality of the project, you can manually schedule the delivery of the encrypted files.
+
+After encrypting the files, you can upload each trusted person’s encrypted `.tar.gz` archive to your personal email account (e.g., Gmail) and schedule an email to be sent to them at a later date.
+
+In the email body, you can include instructions on how to decrypt the files using information from this `README.md` or provide a direct link to the repository:
+
+https://github.com/SejiL/if-i-die?tab=readme-ov-file#workflow-for-trusted-person
+
+This ensures that your trusted person can manually access and decrypt the files when needed.
+
+This method provides an alternative way to securely store and send the files outside the project's automated process.
 
 ## Workflow for Trusted Person
 1. **Install Dependencies**: After receiving the encrypted files, you need to install the required dependencies:
