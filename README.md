@@ -5,6 +5,7 @@
 - [Features](#features)
 - [How It Works](#how-it-works)
 - [Security Considerations](#security-considerations)
+- [Requirements](#requirements)
 - [Installation](#installation)
 - [Workflow for User](#workflow-for-user)
 - [Alternative Manual Method After Encryption](#alternative-manual-method-after-encryption)
@@ -32,6 +33,22 @@ This project uses a hybrid encryption mechanism combining RSA and AES encryption
 - Since AES-CBC does not provide integrity verification, it is important to ensure the encrypted files are not tampered with before decryption.
 
 This hybrid encryption approach ensures that the AES key remains protected using RSA, while AES provides a fast and secure way to encrypt file contents.
+
+## Requirements
+- Python & pip 3.8 or higher
+
+
+To install Python 3.8 and pip3.8 on Ubuntu/Debian:
+```bash
+sudo apt update
+sudo apt install python3.8 python3.8-distutils
+curl -sS https://bootstrap.pypa.io/get-pip.py | python3.8
+```
+To verify installation:
+```bash
+python3.8 --version
+pip3.8 --version
+```
 
 ## Installation
 To use the project, clone the repository:
